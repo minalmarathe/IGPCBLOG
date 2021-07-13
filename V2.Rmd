@@ -1,0 +1,275 @@
+---
+title: "IGPC DATA VISUALISATION"
+output:
+    flexdashboard::flex_dashboard:
+    theme: united
+    orientation: rows
+    vertical_layout: fill
+---
+
+
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(flexdashboard)
+library(knitr)
+library(DT)
+library(rpivotTable)
+library(ggplot2)
+library(plotly)
+library(readr)
+library(stringr)
+library(extrafont)
+library(lubridate)
+library(dplyr)
+library(openintro)
+library(highcharter)
+library(ggvis)
+library(plyr)
+library(forecast)
+library(treemap)
+library(metricsgraphics)
+library(shinythemes)
+library(tinytex)
+```
+
+
+
+
+```{css my-content, echo = FALSE}
+.chart-title {
+  font-size: 15px;
+  text-align: center;
+  color: blue;
+  font-weight: bold;
+  color:black;}
+  .modebar {
+  display: none !important;
+  }
+```
+
+
+
+```{r}
+duty <- read.csv("C:/Users/minalm/Documents/www/Custom duty.csv")
+export <- read.csv("C:/Users/minalm/Documents/www/Gold Jewellry Exports.csv")
+export1 <- read.csv("C:/Users/minalm/Documents/www/Monthly Gold jewelry Exports.csv")
+price <- read.csv("C:/Users/minalm/Documents/www/gold prices.csv")
+hall <- read.csv("C:/Users/minalm/Documents/www/Hallmarked Gold Pieces.csv")
+mthlyvolume <- read.csv("C:/Users/minalm/Documents/www/Import Volumes.csv")
+yrlyvolume <- read.csv("C:/Users/minalm/Documents/www/yearly gold import volumes.csv")
+etf <- read.csv("C:/Users/minalm/Documents/www/Gold ETF.csv")
+creditoutstanding <- read.csv("C:/Users/minalm/Documents/www/Bank credit outstanding.csv")
+```
+
+
+
+
+PAGE 1
+=====================================
+
+Row
+------------------------------------------------------------------------------
+
+
+### MONTHLY GOLD IMPORTS (VALUES IN INR CRS. & $ MLN.)
+
+Source: DGCIS
+```{r}
+p1<- mthlyvolume %>%
+    plot_ly(x = factor(mthlyvolume$Month, levels = unique(mthlyvolume$Month)), 
+            y= ~Rs.in.Crs,
+            text = paste('$ Mlln', mthlyvolume$Rs.in.Mlln),
+            marker = list(color = "#0000FF"))%>%
+   add_bars(width=.4)%>%
+     layout(xaxis = list(title = "",
+           showline = FALSE,
+             showgrid = FALSE,
+             showticklabels = TRUE, showline = TRUE,'nticks'=10),
+         yaxis = list(title = "Import Volumes",
+           showline = FALSE,
+             showgrid = FALSE,
+             showticklabels = FALSE, showline=TRUE))
+p1  
+```
+
+
+
+### YEARLY GOLD IMPORT VOLUMES (IN METRIC TONNES)
+
+Source: DGCIS
+```{r}
+p2<- yrlyvolume %>%
+  plot_ly(x = ~Year,
+          y = ~Value.of.Gold.Imports..in.Metric.tonnes.,
+          type = 'scatter', 
+  	mode = 'lines', line = list(color = "#800080"), name = 'Value of Gold Imports(in metric tonnes)')%>%
+        layout(xaxis = list(title="", 
+             showgrid = FALSE,
+             showticklabels = TRUE, 'nticks'=10),
+                yaxis = list(title = "Import Volumes in metric tonnes", 
+   showticklabels = TRUE,showgrid = FALSE))
+p2
+```
+
+
+Row
+---------------------------------------------------------------------------------------------
+
+
+### CUSTOMS DUTY PER KG OF GOLD (RS IN '000)
+
+Source: CBIC
+```{r}
+p3 <- duty 
+  plot_ly(duty)%>%
+  add_lines(x = factor(duty$Date, levels = unique(duty$Date)),y = ~Custom.duty.per.kg.for.gold,line = list(color = "#FF1493"))%>% 
+              layout(xaxis = list(title="", showgrid = FALSE,showticklabels = TRUE, 'nticks'=2, showline=TRUE),
+                yaxis = list(title = "Customs duty per kg", showticklabels = TRUE,showgrid = FALSE))
+p3
+```
+
+
+### NUMBER OF GOLD ARTICLES HALLMARKED YEARLY (IN CRORES)
+
+Source: BIS
+```{r}
+p4 <-hall %>%
+plot_ly(x = ~Year, 
+        y= ~No..of.articles..In.crs.,
+            marker = list(color = "#8B0000")) %>%
+  add_bars(width=.2) %>%
+           layout(xaxis = list(title="", showline = FALSE,
+             showgrid = FALSE,
+             showticklabels = TRUE,showline = TRUE),
+                yaxis = list(title = "Number of gold pieces", showticklabels = TRUE,   showgrid = FALSE))
+p4
+```
+
+
+
+
+PAGE 2
+=====================================
+
+Row
+------------------------------------------------------------------------------
+
+### MONTHLY GOLD JEWELLERY EXPORTS (VALUE IN $ BLN.)
+
+Source: GJEPC
+```{r}
+p5<- export1 %>%
+  plot_ly() %>% 
+  add_trace(x = factor(export1$Month, levels = unique(export1$Month)),
+            text = paste("$ Blln"),
+            y = ~Value.in...Blln,
+            type = "scatter", mode="lines", line = list(color = "#8B008B")) %>% 
+  layout(title = " ",
+         xaxis = list(title = "", showticklabels = TRUE, showgrid = FALSE, 'nticks'=10), yaxis = list(title = "Gold jewellery exports", showticklabels = TRUE, showgrid = FALSE), legend = list(x = 0.7, y = 1.1))
+p5
+```
+
+
+### YEARLY GOLD JEWELLERY EXPORTS (VALUE IN $ BLN.)
+Source: GJEPC
+```{r}
+p6 <- export %>%
+  plot_ly(x = ~Year, 
+          y= ~Value.In...Billion,
+              marker = list(color = "#8B008B")) %>%
+  add_bars(width=.3)%>%
+         layout(xaxis = list(title="", showline = TRUE,
+             showgrid = FALSE,
+             showticklabels = TRUE, 'nticks'=8),
+                yaxis = list(title = "Gold jewellery exports", showticklabels = TRUE,
+  showgrid = FALSE))
+p6
+```
+
+Row
+------------------------------------------------------------------------------
+
+### YEARLY GOLD PRICES (MUMBAI PRICE PER 10 GMS, LBMA PRICE $ PER OUNCE)
+Source: RBI
+```{r}
+p5<- price %>%
+  plot_ly(x = ~Year, y = ~Mumbai.price.per.10.gram, name = 'Mumbai price per 10 grams',
+            marker = list(color = '#483D8B', width= 0.3))%>%
+  add_bars(width=.3) %>%
+add_trace(x = ~Year, y = ~LBMA.Price, type = 'scatter', mode = 'lines', name = 'LBMA price $ per ounce', yaxis = 'y2',
+            line = list(color = '#C71585'))%>%
+layout(title = '',
+         xaxis = list(title = ""),
+         yaxis = list(side = 'left', title = '', showgrid = FALSE, zeroline = FALSE),
+         yaxis2 = list(side = 'right', overlaying = "y", title = '', showgrid = FALSE, zeroline = FALSE), 
+       legend = list(x = 0.3, y = 1.2))
+p5
+```
+
+### GOLD ETFs (NET AUM IN CRS.) 
+Source: AMFI
+```{r}
+p8 <- etf %>%
+    plot_ly(x = factor(etf$Month, levels = unique(etf$Month)),
+  	y = ~Net.AUM..INR.in.crore.,
+  	type = 'scatter', 
+  	mode = 'line', line = list(color = "#DC143C")) %>% 
+              layout(xaxis = list(title="", showgrid = FALSE,showticklabels = TRUE, 'nticks'=15),
+                yaxis = list(title = "Net AUM", showticklabels = TRUE,showgrid = FALSE))
+p8
+```
+
+PAGE 3
+=====================================
+
+
+Row
+------------------------------------------------------------------------------
+
+
+### GROSS BANK CREDIT OUTSTANDING TO GEMS & JEWELLERY SECTOR 
+
+Source: RBI
+```{r}
+p9<- creditoutstanding %>%
+  plot_ly(x = ~Year, y = ~Gems...Jewellery..Rs..In.Blln., name = 'Gems & Jewellery credit outstanding',
+            marker = list(color = '#483D8B', width= 0.3), 
+            hoverinfo = "text", text = ~paste(Gems...Jewellery..Rs..In.Blln., '$ Blln'))%>%
+  add_bars(width=.3) %>%
+add_trace(x = ~Year, y = ~Percentage.of.total.industry, type = 'scatter', mode = 'lines', name = 'Percent of total industry lending', yaxis = 'y2',
+            line = list(color = '#C71585'),
+            hoverinfo = "text", text = ~paste(Percentage.of.total.industry, '%'))%>%
+layout(title = '',
+         xaxis = list(title = ""),
+         yaxis = list(side = 'left', title = 'Gems & Jewellery sector', showgrid = FALSE, zeroline = FALSE),
+         yaxis2 = list(side = 'right', overlaying = "y", title = '', showgrid = FALSE, zeroline = FALSE), 
+       legend = list(x = 0.1, y = 1.2))
+p9
+```
+
+###  
+
+
+```{r}
+
+```
+
+
+
+Row
+-------------------------------------
+
+
+### 
+
+```{r}
+
+```
+
+
+### 
+
+```{r}
+
+```
