@@ -1,0 +1,7 @@
+---
+title: "Articles"
+author: "MINAL"
+date: "13/07/2021"
+output: html_document
+---
+Here, articles will be posted.

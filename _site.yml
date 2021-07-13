@@ -1,0 +1,13 @@
+name: "personal-website"
+output_dir: "."
+navbar:
+  title: "Personal Website"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Articles"
+      href: articles.html
+    - text: "Published papers"
+      href: publishedpapers.html
+    - text: "Working papers"
+      href: workingpapers.html

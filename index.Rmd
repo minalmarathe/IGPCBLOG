@@ -1,0 +1,8 @@
+---
+title: "Home"
+author: "MINAL"
+date: "13/07/2021"
+output: html_document
+---
+
+This is India gold policy center. 
